@@ -9,7 +9,7 @@
 | Nombre | No. Control | Rol |
 |---|---|---|
 | Oscar Francisco Alonso Sanchez | 23210539 | **Líder del equipo** |
-| Sebastian Humberto Cobian Beas | 23210569 | Desarrollador |
+| Humberto Sebastian Cobian Beas | 23210569 | Desarrollador |
 | Gualberto Castro Castellanos | 23210564 | Desarrollador |
 | Esdras Xavier Vazquez Alvarez | 20212437 | Desarrollador |
 
