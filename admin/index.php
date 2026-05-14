@@ -13,7 +13,7 @@ $stats = [
 $recentOrders = $db->query("SELECT o.*, u.name AS user_name FROM orders o LEFT JOIN users u ON o.user_id=u.id ORDER BY o.created_at DESC LIMIT 10")->fetchAll();
 
 $pageTitle = 'Admin - NYX';
-require_once '../includes/header.php';
+require_once 'header_admin.php';
 ?>
 <div class="container">
 <div class="page-content">
@@ -28,13 +28,6 @@ require_once '../includes/header.php';
   <div class="stat-card"><div class="stat-label">Pedidos</div><div class="stat-value"><?= $stats['orders'] ?></div></div>
   <div class="stat-card"><div class="stat-label">Clientes</div><div class="stat-value"><?= $stats['users'] ?></div></div>
   <div class="stat-card"><div class="stat-label">Ingresos</div><div class="stat-value"><?= precio($stats['revenue']) ?></div></div>
-</div>
-
-<div style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
-  <a href="products.php"   class="btn btn-primary">Productos</a>
-  <a href="orders.php"     class="btn btn-secondary">Pedidos</a>
-  <a href="categories.php" class="btn btn-secondary">Categorias</a>
-  <a href="users.php"      class="btn btn-secondary">Usuarios</a>
 </div>
 
 <div class="card">
@@ -67,4 +60,4 @@ require_once '../includes/header.php';
 
 </div>
 </div>
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; // footer ?>

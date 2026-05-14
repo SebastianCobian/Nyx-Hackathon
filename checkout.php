@@ -1,6 +1,11 @@
 <?php
 require_once 'includes/config.php';
 requireLogin();
+if (isAdmin()) {
+    setFlash('error', 'Los administradores no pueden realizar compras.');
+    header('Location: admin/index.php');
+    exit;
+}
 if (empty($_SESSION['cart'])) { setFlash('info','Tu carrito esta vacio.'); header('Location: index.php'); exit; }
 
 $db = getDB();

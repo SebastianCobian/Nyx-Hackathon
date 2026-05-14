@@ -35,7 +35,7 @@ if (isset($_GET['edit'])) {
 $categories = $db->query("SELECT c.*, COUNT(p.id) AS product_count FROM categories c LEFT JOIN products p ON p.category_id=c.id GROUP BY c.id ORDER BY c.name")->fetchAll();
 
 $pageTitle = 'Categorias - Admin NYX';
-require_once '../includes/header.php';
+require_once 'header_admin.php';
 ?>
 <div class="container">
 <div class="page-content">
@@ -94,4 +94,4 @@ require_once '../includes/header.php';
 </div>
 </div>
 </div>
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; // footer ?>

@@ -75,7 +75,7 @@ $products   = $db->query("SELECT p.*, c.name AS cat_name FROM products p LEFT JO
 $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
 $pageTitle = 'Productos - Admin NYX';
-require_once '../includes/header.php';
+require_once 'header_admin.php';
 ?>
 <div class="container">
 <div class="page-content">
@@ -178,4 +178,4 @@ require_once '../includes/header.php';
 
 </div>
 </div>
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; // footer ?>
