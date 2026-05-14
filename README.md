@@ -9,7 +9,7 @@
 | Nombre | No. Control | Rol |
 |---|---|---|
 | Oscar Francisco Alonso Sanchez | 23210539 | **Líder del equipo** |
-| Sebastian Humberto Cobian Beas | 23210569 | Desarrollador |
+| Humberto Sebastian Cobian Beas | 23210569 | Desarrollador |
 | Gualberto Castro Castellanos | 23210564 | Desarrollador |
 | Esdras Xavier Vazquez Alvarez | 20212437 | Desarrollador |
 
@@ -50,11 +50,10 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 - [x] Sistema de reseñas con estrellas
 - [x] Alerta de stock bajo
 - [x] Integración Blink Galaxy
+- [x] Animaciones y detalles de UI
 
 ### 🔄 En progreso
 - [ ] Timeline de seguimiento de pedido
-- [ ] Asistente virtual Luna (chatbot)
-- [ ] Animaciones y detalles de UI
 - [ ] Pruebas en Raspberry Pi
 
 ### ⏳ Pendiente
