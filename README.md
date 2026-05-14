@@ -8,10 +8,10 @@
 
 | Nombre | No. Control | Rol |
 |---|---|---|
-| Oscar Francisco Alonso Sanchez | 23210539 | **Líder del equipo** |
-| Humberto Sebastian Cobian Beas | 23210569 | Desarrollador |
-| Gualberto Castro Castellanos | 23210564 | Desarrollador |
-| Esdras Xavier Vazquez Alvarez | 20212437 | Desarrollador |
+| Oscar Francisco Alonso Sanchez | 23210539 | **Líder del equipo** — Dirección creativa del proyecto y desarrollo de NYX |
+| Humberto Sebastian Cobian Beas | 23210569 | Documentación, creatividad y presentador del pitch |
+| Gualberto Castro Castellanos | 23210564 | Configuración y deploy del servidor Raspberry Pi 4 |
+| Esdras Xavier Vazquez Alvarez | 20212437 | Desarrollo principal de NYX y base de datos |
 
 ---
 
@@ -95,7 +95,6 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 | Base de datos | MariaDB |
 | Frontend | HTML5 + CSS3 + JavaScript vanilla |
 | Tipografía | Google Fonts — Cinzel + DM Sans |
-| IA del chatbot | Procesamiento de lenguaje natural propio |
 | Voz | Web Speech API nativa del navegador |
 
 ---
