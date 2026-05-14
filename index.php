@@ -40,18 +40,22 @@ require_once 'includes/header.php';
   <img src="assets/images/logo.png" alt="NYX" class="hero-logo">
   <h1>NYX</h1>
   <div class="hero-slogan">La noche que ilumina tus compras</div>
-  <p>Un universo infinito donde la luna guia tus compras y todo lo que buscas brilla con luz propia.</p>
 </div>
 
 <form method="GET" class="search-bar" id="searchForm">
-  <div style="flex:1;display:flex;gap:0.5rem;min-width:200px">
+  <div style="flex:1;display:flex;gap:0.5rem;min-width:200px;position:relative">
     <input type="text" name="q" class="form-control" id="searchInput"
            placeholder="Buscar productos..."
-           value="<?= e($search) ?>">
+           value="<?= e($search) ?>"
+           autocomplete="off"
+           oninput="autoComplete(this.value)"
+           onkeydown="handleKey(event)">
     <button type="button" id="voiceBtn" title="Buscar por voz"
             style="background:rgba(200,216,240,0.05);border:1px solid rgba(200,216,240,0.14);border-radius:8px;padding:0 0.9rem;cursor:pointer;color:var(--muted);font-size:1.1rem;transition:all 0.2s;white-space:nowrap;display:none">
       🎙️
     </button>
+    <!-- DROPDOWN AUTOCOMPLETADO -->
+    <div id="autocompleteList" style="display:none;position:absolute;top:100%;left:0;right:0;background:rgba(6,6,18,0.97);border:1px solid rgba(200,216,240,0.15);border-radius:0 0 10px 10px;z-index:500;backdrop-filter:blur(12px);max-height:280px;overflow-y:auto;margin-top:2px"></div>
   </div>
   <select name="cat" class="form-control" style="max-width:180px" onchange="this.form.submit()">
     <option value="0">Todas las categorias</option>
@@ -66,6 +70,66 @@ require_once 'includes/header.php';
     <a href="index.php" class="btn btn-secondary">Limpiar</a>
   <?php endif; ?>
 </form>
+
+<script>
+var acIndex = -1;
+
+function autoComplete(val) {
+  var list = document.getElementById('autocompleteList');
+  if (val.length < 2) { list.style.display='none'; return; }
+
+  fetch('search_ac.php?q=' + encodeURIComponent(val))
+  .then(r => r.json())
+  .then(data => {
+    list.innerHTML = '';
+    acIndex = -1;
+    if (!data.length) { list.style.display='none'; return; }
+    data.forEach(function(item, i) {
+      var div = document.createElement('div');
+      div.innerHTML =
+  '<div style="padding:0.65rem 1rem;cursor:pointer;border-bottom:1px solid rgba(200,216,240,0.06);transition:background 0.15s;font-size:0.88rem;color:var(--moon)" '+
+  'onmouseover="this.style.background=\'rgba(200,216,240,0.07)\'" '+
+  'onmouseout="this.style.background=\'\'" '+
+  'onclick="selectResult(\'' + item.name.replace(/'/g,"\\'") + '\')">' +
+  item.name +
+  '</div>';
+      list.appendChild(div);
+    });
+    list.style.display = 'block';
+  });
+}
+
+function selectResult(name) {
+  document.getElementById('searchInput').value = name;
+  document.getElementById('autocompleteList').style.display = 'none';
+  document.getElementById('searchForm').submit();
+}
+
+function handleKey(e) {
+  var items = document.querySelectorAll('#autocompleteList > div');
+  if (e.key === 'ArrowDown') {
+    acIndex = Math.min(acIndex+1, items.length-1);
+  } else if (e.key === 'ArrowUp') {
+    acIndex = Math.max(acIndex-1, 0);
+  } else if (e.key === 'Escape') {
+    document.getElementById('autocompleteList').style.display='none';
+    return;
+  } else { return; }
+  items.forEach(function(el,i) {
+    el.firstChild.style.background = i===acIndex ? 'rgba(200,216,240,0.1)' : '';
+  });
+  if (acIndex>=0 && items[acIndex]) {
+    var name = items[acIndex].querySelector('div > div').textContent;
+    document.getElementById('searchInput').value = name;
+  }
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#autocompleteList') && !e.target.closest('#searchInput')) {
+    document.getElementById('autocompleteList').style.display='none';
+  }
+});
+</script>
 
 <style>
 #voiceBtn.listening {
@@ -149,15 +213,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 }
 </script>
 
-<div class="category-tabs">
-  <a href="index.php" class="category-tab <?= !$category&&!$search?'active':'' ?>">Todos</a>
-  <?php foreach ($cats as $cat): ?>
-    <a href="index.php?cat=<?= $cat['id'] ?>"
-       class="category-tab <?= $category==$cat['id']?'active':'' ?>">
-      <?= e($cat['name']) ?>
-    </a>
-  <?php endforeach; ?>
-</div>
+
 
 <?php if ($search || $category): ?>
   <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem">

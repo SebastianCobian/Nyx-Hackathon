@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isLoggedIn()) {
         } else {
             $db->prepare("INSERT INTO reviews (product_id,user_id,rating,comment) VALUES (?,?,?,?)")->execute([$id,$_SESSION['user_id'],$rating,$comment]);
         }
-        setFlash('success', 'Resena guardada!');
+        setFlash('success', 'Reseña guardada!');
         header("Location: product.php?id=$id"); exit;
     }
 }
@@ -56,9 +56,17 @@ require_once 'includes/header.php';
 <div class="grid-2" style="gap:2rem;align-items:start">
 
   <div class="card">
-    <div style="height:260px;background:linear-gradient(135deg,rgba(16,16,42,0.9),rgba(8,8,24,0.95));display:flex;align-items:center;justify-content:center;font-size:5rem">
+    <div style="height:260px;background:linear-gradient(135deg,rgba(16,16,42,0.9),rgba(8,8,24,0.95));display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;overflow:hidden">
       <?php if ($product['image'] && file_exists('assets/images/'.$product['image'])): ?>
-        <img src="assets/images/<?= e($product['image']) ?>" style="width:100%;height:100%;object-fit:cover">
+        <img src="assets/images/<?= e($product['image']) ?>"
+             style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;transition:transform 0.3s"
+             onclick="openLightbox(this.src)"
+             onmouseover="this.style.transform='scale(1.03)'"
+             onmouseout="this.style.transform='scale(1)'"
+             title="Clic para ampliar">
+        <div style="position:absolute;bottom:0.6rem;right:0.6rem;background:rgba(0,0,0,0.5);border-radius:6px;padding:0.3rem 0.6rem;font-size:0.72rem;color:rgba(255,255,255,0.7);pointer-events:none">
+          🔍 Ver imagen
+        </div>
       <?php else: ?> 🌙 <?php endif; ?>
     </div>
     <div class="card-body">
@@ -78,7 +86,49 @@ require_once 'includes/header.php';
           <?= number_format($product['avg_rating'],1) ?> (<?= $product['review_count'] ?> resenas)
         </span>
       </div>
-      <p style="color:var(--muted);line-height:1.8;margin-bottom:1.2rem"><?= e($product['description']) ?></p>
+      <?php
+      $esRopa = in_array(strtolower($product['cat_name'] ?? ''), ['ropa','ropa y accesorios','moda','indumentaria']);
+      $todasLasTallas = ['XS','S','M','G','XG','XXL','3XL'];
+      $tallasDisponibles = [];
+      $descripcionLimpia = $product['description'] ?? '';
+
+      // Detectar formato TALLAS: XS,S,M | descripcion
+      if ($esRopa && preg_match('/^TALLAS:\s*([^|]+)\|(.*)/i', $product['description'], $matches)) {
+          $tallasDisponibles = array_map('trim', explode(',', $matches[1]));
+          $descripcionLimpia = trim($matches[2]);
+      } elseif ($esRopa) {
+          $tallasDisponibles = $todasLasTallas;
+      }
+      ?>
+
+      <p style="color:var(--muted);line-height:1.8;margin-bottom:1.2rem"><?= e($descripcionLimpia) ?></p>
+
+      <?php if ($esRopa): ?>
+      <div style="margin-bottom:1.2rem">
+        <div style="font-size:0.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.7rem">
+          Talla: <span id="tallaSeleccionada" style="color:var(--moon)">Selecciona una talla</span>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <?php foreach ($todasLasTallas as $t):
+            $disponible = in_array($t, $tallasDisponibles);
+          ?>
+            <?php if ($disponible): ?>
+              <button onclick="seleccionarTalla('<?= $t ?>', this)"
+                      style="min-width:52px;padding:0.5rem 0.7rem;border-radius:8px;border:1px solid rgba(200,216,240,0.15);background:rgba(200,216,240,0.05);color:var(--muted);font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">
+                <?= $t ?>
+              </button>
+            <?php else: ?>
+              <button disabled
+                      style="min-width:52px;padding:0.5rem 0.7rem;border-radius:8px;border:1px solid rgba(200,216,240,0.06);background:transparent;color:rgba(200,216,240,0.15);font-size:0.85rem;font-weight:600;cursor:not-allowed;text-decoration:line-through;position:relative">
+                <?= $t ?>
+              </button>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:0.5rem">Las tallas tachadas no están disponibles</p>
+      </div>
+      <?php endif; ?>
+
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <span style="font-family:'Cinzel',serif;font-size:1.8rem;font-weight:700;color:var(--accent)"><?= precio($product['price']) ?></span>
         <?php if ($product['stock'] <= 0): ?>
@@ -91,9 +141,37 @@ require_once 'includes/header.php';
       </div>
       <?php if ($product['stock'] > 0): ?>
         <button class="btn btn-primary btn-block" style="margin-top:1.2rem;padding:0.9rem"
-                data-product="<?= $product['id'] ?>" onclick="addToCart(<?= $product['id'] ?>)">
+                id="btnAgregar"
+                data-product="<?= $product['id'] ?>"
+                onclick="<?= $esRopa ? 'agregarConTalla(' . $product['id'] . ')' : 'addToCart(' . $product['id'] . ')' ?>">
           🌙 Agregar al carrito
         </button>
+      <?php endif; ?>
+
+      <?php if ($esRopa): ?>
+      <script>
+      var tallaElegida = null;
+      function seleccionarTalla(talla, btn) {
+        tallaElegida = talla;
+        document.getElementById('tallaSeleccionada').textContent = talla;
+        document.querySelectorAll('[onclick^="seleccionarTalla"]').forEach(function(b) {
+          b.style.borderColor = 'rgba(200,216,240,0.15)';
+          b.style.background  = 'rgba(200,216,240,0.05)';
+          b.style.color       = 'var(--muted)';
+        });
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.background  = 'rgba(200,216,240,0.12)';
+        btn.style.color       = 'var(--moon)';
+      }
+      function agregarConTalla(productId) {
+        if (!tallaElegida) {
+          document.getElementById('tallaSeleccionada').style.color = 'var(--danger)';
+          document.getElementById('tallaSeleccionada').textContent = 'Selecciona una talla primero';
+          return;
+        }
+        addToCart(productId);
+      }
+      </script>
       <?php endif; ?>
     </div>
   </div>
@@ -103,7 +181,7 @@ require_once 'includes/header.php';
       <div class="card" style="margin-bottom:1.5rem">
         <div class="card-body">
           <h2 style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--moon);margin-bottom:1rem">
-            <?= $userReview ? 'Editar tu resena' : 'Escribir resena' ?>
+            <?= $userReview ? 'Editar tu reseña' : 'Escribir reseña' ?>
           </h2>
           <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
           <form method="POST">
@@ -120,16 +198,16 @@ require_once 'includes/header.php';
             <div class="form-group">
               <label class="form-label">Comentario (opcional)</label>
               <textarea name="comment" class="form-control" rows="3"
-                placeholder="Que te parecio el producto?"><?= e($userReview['comment'] ?? '') ?></textarea>
+                placeholder="Qué te pareció el producto?"><?= e($userReview['comment'] ?? '') ?></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Publicar resena</button>
+            <button type="submit" class="btn btn-primary">Publicar reseña</button>
           </form>
         </div>
       </div>
     <?php else: ?>
       <div class="card" style="margin-bottom:1.5rem">
         <div class="card-body" style="text-align:center;padding:2rem">
-          <p style="color:var(--muted);margin-bottom:1rem">Inicia sesion para dejar una resena</p>
+          <p style="color:var(--muted);margin-bottom:1rem">Inicia sesion para dejar una reseña</p>
           <a href="login.php?redirect=product.php?id=<?= $id ?>" class="btn btn-primary">Iniciar sesion</a>
         </div>
       </div>
@@ -138,13 +216,13 @@ require_once 'includes/header.php';
     <div class="card">
       <div class="card-body">
         <h2 style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--moon);margin-bottom:1rem">
-          Resenas (<?= count($reviews) ?>)
+          Reseñas (<?= count($reviews) ?>)
         </h2>
         <?php if (empty($reviews)): ?>
           <div class="empty-state" style="padding:2rem">
             <div class="icon">&#9733;</div>
-            <h3>Sin resenas aun</h3>
-            <p>Se el primero en opinar</p>
+            <h3>Sin reseñas aun</h3>
+            <p>Sé el primero en opinar</p>
           </div>
         <?php else: ?>
           <?php foreach ($reviews as $r): ?>
@@ -171,4 +249,34 @@ require_once 'includes/header.php';
 </div>
 </div>
 </div>
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()"
+     style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,10,0.95);backdrop-filter:blur(12px);align-items:center;justify-content:center;cursor:zoom-out">
+  <img id="lightboxImg" src="" alt="Producto"
+       style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 0 60px rgba(200,216,240,0.2);animation:zoomIn 0.25s ease"
+       onclick="event.stopPropagation()">
+  <button onclick="closeLightbox()"
+          style="position:fixed;top:1.5rem;right:1.5rem;background:rgba(200,216,240,0.1);border:1px solid rgba(200,216,240,0.2);color:white;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10000">
+    ✕
+  </button>
+</div>
+<style>
+@keyframes zoomIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+</style>
+<script>
+function openLightbox(src) {
+  var lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = src;
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
 <?php require_once 'includes/footer.php'; ?>
