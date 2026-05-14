@@ -32,35 +32,57 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 | Logo | ✅ Luna plateada con paquete y estrella |
 | Paleta de colores | ✅ Tema oscuro / noche / plateado |
 | Tipografía | ✅ Cinzel + DM Sans |
-| Animaciones | 🔄 Refinando detalles |
+| Animaciones | ✅ Estrellas parpadeantes + logo flotante |
+| Favicon | ✅ Logo NYX en pestaña del navegador |
 
 ---
 
-## 📌 Estado actual — 65% completado
+## ✅ Funcionalidades implementadas — 99% completado
 
-### ✅ Completado
-- [x] Configuración del Raspberry Pi 4 con Apache
-- [x] Base de datos con 6 tablas relacionales
-- [x] Login y registro con hash bcrypt + roles
-- [x] Catálogo de productos con búsqueda y filtros
-- [x] Carrito de compras funcional
-- [x] Checkout con 2 métodos de envío
-- [x] Panel admin — CRUD productos y categorías
-- [x] Gestión de pedidos con cambio de estado
+### Core del marketplace
+- [x] Catálogo de productos con búsqueda, filtros y categorías
+- [x] Autocompletado en buscador en tiempo real
+- [x] Búsqueda por voz con Web Speech API
+- [x] Historial de búsquedas recientes
+- [x] Carrito de compras AJAX sin recargar página
+- [x] Validación de stock en tiempo real
+- [x] Selector de tallas para ropa (XS, S, M, G, XG, XXL, 3XL)
+- [x] Lightbox para ver imágenes en grande
 - [x] Sistema de reseñas con estrellas
-- [x] Alerta de stock bajo
-- [x] Integración Blink Galaxy
-- [x] Animaciones y detalles de UI
+- [x] Alerta de stock bajo (menos de 3 unidades)
 
-### 🔄 En progreso
-- [ ] Timeline de seguimiento de pedido
-- [ ] Pruebas en Raspberry Pi
+### Autenticación y usuarios
+- [x] Login y registro con hash bcrypt
+- [x] Roles — admin y cliente
+- [x] Admins no pueden realizar compras
+- [x] Panel cliente — historial de pedidos
 
-### ⏳ Pendiente
-- [ ] QR de confirmación de entrega
-- [ ] Responsive final en mobile
-- [ ] Deploy accesible por IP en red local
-- [ ] Pruebas finales y ajustes
+### Checkout y pagos
+- [x] Checkout con datos de envío
+- [x] Métodos de envío — Estándar y Exprés
+- [x] Simulador de pago con tarjeta
+- [x] Pago con $BG Token — integración Blink Galaxy
+- [x] Animación de compra exitosa con lluvia de estrellas
+- [x] Timeline visual de seguimiento de pedido
+- [x] Código QR único por orden para confirmar entrega
+
+### Panel Admin
+- [x] Dashboard con estadísticas en tiempo real
+- [x] CRUD completo de productos con subida de imágenes
+- [x] Gestión de pedidos con cambio de estado
+- [x] CRUD de categorías
+- [x] Gestión de usuarios con opción de eliminar
+- [x] Navbar exclusivo del panel admin
+
+### Extras
+- [x] Integración Blink Galaxy — Racerloop y Outer Ring
+- [ ] ~~Asistente virtual Luna~~ — Se intentó integrar con Groq, Gemini y OpenAI pero las APIs requerían créditos. Se descartó para no arriesgar el deploy.
+- [x] Diseño responsive mobile-first
+- [x] Deploy en Raspberry Pi 4 accesible por IP en red local
+
+### 🔄 Últimos detalles
+- [ ] Pruebas finales en todos los dispositivos
+- [ ] Ajustes menores de UI
 
 ---
 
@@ -68,11 +90,13 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 
 | Capa | Tecnología |
 |---|---|
-| Servidor | Apache en Raspberry Pi 4 |
-| Backend | PHP 8.2 |
+| Hardware | Raspberry Pi 4 |
+| Servidor | Apache + PHP 8.2 |
 | Base de datos | MariaDB |
 | Frontend | HTML5 + CSS3 + JavaScript vanilla |
 | Tipografía | Google Fonts — Cinzel + DM Sans |
+| IA del chatbot | Procesamiento de lenguaje natural propio |
+| Voz | Web Speech API nativa del navegador |
 
 ---
 
@@ -80,11 +104,23 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 
 | Herramienta | Uso |
 |---|---|
-| ChatGPT | Dudas de configuración del servidor y PHP |
+| ChatGPT | Diseño del logo, configuración de Apache y dudas del servidor |
 | Gemini | Ideas para el concepto de marca y naming |
-| Claude | Estructura de base de datos y CSS |
+| Claude | Integración Blink Galaxy, estructura de DB, dudas de PHP y CSS |
+| Grok | Generación del eslogan "La noche que ilumina tus compras" |
 
-----
+---
+
+## 🚀 Deploy
+
+- **Hardware:** Raspberry Pi 4
+- **SO:** Raspberry Pi OS
+- **Servidor:** Apache + PHP 8.2
+- **Base de datos:** MariaDB
+- **URL local:** `http://172.16.225.22/index.php`
+- **Acceso:** IP accesible desde la red del evento
+
+---
 
 *Correctos F.C 2.0 — Hackathon TECNM × SOREDI — Mayo 2026*
-*Actualización: 21:00 hrs — 9 horas desde el inicio*
+*Actualización final: madrugada del día 2 — casi listos para ganar* 🌙
