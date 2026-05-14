@@ -50,11 +50,10 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 - [x] Sistema de reseñas con estrellas
 - [x] Alerta de stock bajo
 - [x] Integración Blink Galaxy
+- [x] Animaciones y detalles de UI
 
 ### 🔄 En progreso
 - [ ] Timeline de seguimiento de pedido
-- [ ] Asistente virtual Luna (chatbot)
-- [ ] Animaciones y detalles de UI
 - [ ] Pruebas en Raspberry Pi
 
 ### ⏳ Pendiente
