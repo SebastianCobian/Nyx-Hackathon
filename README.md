@@ -37,7 +37,7 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 
 ---
 
-## ✅ Funcionalidades implementadas — 99% completado
+## ✅ Funcionalidades implementadas — 100% completado
 
 ### Core del marketplace
 - [x] Catálogo de productos con búsqueda, filtros y categorías
@@ -81,8 +81,8 @@ NYX lleva el nombre de la diosa griega de la noche — una fuerza primordial tan
 - [x] Deploy en Raspberry Pi 4 accesible por IP en red local
 
 ### 🔄 Últimos detalles
-- [ ] Pruebas finales en todos los dispositivos
-- [ ] Ajustes menores de UI
+- [x] Pruebas finales en todos los dispositivos
+- [x] Ajustes menores de UI
 
 ---
 
